@@ -1,0 +1,61 @@
+August 09th 2020
+
+Started updating archiso to new pattern
+
+Not sure if there is a replacement to customize_airootfs, may be better using run_before_mksquashfs
+
+Noticed the existence of os-release and lsb-hooks still at airootfs files, removed, now needs testing.
+
+August 12th 2020 (joekamprad)
+
+* boot entries for EFI and syslinux added (working now)
+
+* adding:
+# Copy mkinitcpio archiso hooks and build initramfs (airootfs)
+make_setup_mkinitcpio() {
+    local _hook
+    mkdir -p ${work_dir}/x86_64/airootfs/etc/initcpio/hooks
+    mkdir -p ${work_dir}/x86_64/airootfs/etc/initcpio/install
+    for _hook in archiso archiso_shutdown archiso_loop_mnt; do
+        cp /usr/lib/initcpio/hooks/${_hook} ${work_dir}/x86_64/airootfs/etc/initcpio/hooks
+        cp /usr/lib/initcpio/install/${_hook} ${work_dir}/x86_64/airootfs/etc/initcpio/install
+    done
+    sed -i "s|/usr/lib/initcpio/|/etc/initcpio/|g" ${work_dir}/x86_64/airootfs/etc/initcpio/install/archiso_shutdown
+    cp /usr/lib/initcpio/install/archiso_kms ${work_dir}/x86_64/airootfs/etc/initcpio/install
+    cp /usr/lib/initcpio/archiso_shutdown ${work_dir}/x86_64/airootfs/etc/initcpio
+    cp ${script_path}/mkinitcpio.conf ${work_dir}/x86_64/airootfs/etc/mkinitcpio-archiso.conf
+}
+to build.sh
+
+* removed mkinitcpio-archiso from packages.x86_64 (not needed on iso if initcpio folder is present inside airootfs folder)
+---> copy initcpio folder to airootfs/etc/.
+
+August 14th
+NetworkManager.service removed from run_before_mksquash to test new archiso implementation for wifi and ethernet.
+OBS: Readded, it's needed
+
+rm -r airootfs/etc/systemd/system/{etc-pacman.d-gnupg.mount,pacman-init.service,reflector.service,choose-mirror.service}
+
+airootfs/etc/pacman.d/gnupg/gpg.conf created with the following config to avoid keyserver error from archlinux default server
+
+no-greeting
+no-permission-warning
+lock-never
+keyserver-options timeout=10
+keyserver-options import-clean
+keyserver-options no-self-sigs-only
+keyserver keyserver.ubuntu.com 
+
+
+github log:
+ create mode 100644 airootfs/etc/pacman.d/gnupg/gpg.conf
+ delete mode 100755 airootfs/etc/systemd/system/choose-mirror.service
+ delete mode 100755 airootfs/etc/systemd/system/etc-pacman.d-gnupg.mount
+ delete mode 100755 airootfs/etc/systemd/system/pacman-init.service
+ delete mode 100755 airootfs/etc/systemd/system/reflector.service
+ delete mode 100755 airootfs/root/deprecated_customize_airootfs.sh
+ delete mode 100755 airootfs/root/deprecated_endeavouros_customize_airootfs.sh
+ delete mode 100755 airootfs/usr/local/bin/Installation_guide
+ delete mode 100755 airootfs/usr/local/bin/choose-mirror
+ delete mode 100755 deprecated_endeavouros_customize_airootfs.sh
+
