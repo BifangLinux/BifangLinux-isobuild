@@ -29,6 +29,7 @@ device-mapper
 diffutils
 dmidecode
 dosfstools
+dpkg
 e2fsprogs
 efibootmgr
 encfs
