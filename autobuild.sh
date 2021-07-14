@@ -1,13 +1,13 @@
 #!/bin/bash
-USER="rclinux"
+USER="bifanglinux"
 
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 
    exit 1
 fi
 
-ISO="rclinux-$(date +%y%m)_x86_64.iso"
-SIG="rclinux-$(date +%y%m)_x86_64.iso.sig"
+ISO="bifang-$(date +%y%m)_x86_64.iso"
+SIG="bifang-$(date +%y%m)_x86_64.iso.sig"
 MD5SUM="md5sum"
 
 #Build ISO File
