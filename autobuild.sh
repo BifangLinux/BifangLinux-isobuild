@@ -6,8 +6,8 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-ISO="bifanglinux-$(date +%y%m)_x86_64.iso"
-SIG="bifanglinux-$(date +%y%m)_x86_64.iso.sig"
+ISO="Bifanglinux-$(date +%y%m)_x86_64.iso"
+SIG="Bifanglinux-$(date +%y%m)_x86_64.iso.sig"
 MD5SUM="md5sum"
 
 #Build ISO File
